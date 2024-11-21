@@ -177,8 +177,8 @@
 	sound {
 		compatible = "qcom,x1e80100-sndcard";
 		model = "X1E80100-HP-OMNIBOOK-X14";
-		audio-routing = "SpeakerLeft IN", "WSA WSA_SPK1 OUT",
-				"SpeakerRight IN", "WSA2 WSA_SPK2 OUT",
+		audio-routing = "SpkrLeft IN", "WSA WSA_SPK1 OUT",
+				"SpkrRight IN", "WSA WSA_SPK2 OUT",
 				"IN1_HPHL", "HPHL_OUT",
 				"IN2_HPHR", "HPHR_OUT",
 				"AMIC2", "MIC BIAS2",
@@ -232,10 +232,7 @@
 			};
 
 			codec {
-				sound-dai = <&left_speaker>,
-					    <&swr0 0>, <&lpass_wsamacro 0>,
-					    <&right_speaker>,
-					    <&swr3 0>, <&lpass_wsa2macro 0>;
+				sound-dai = <&left_spkr>, <&right_spkr>, <&swr0 0>, <&lpass_wsamacro 0>;
 			};
 
 			platform {
@@ -335,7 +332,7 @@
 		gpio = <&pmc8380_5_gpios 8 GPIO_ACTIVE_HIGH>;
 		enable-active-high;
 
-		pinctrl-0 = <&rtmr0_1p15_reg_en>;
+		pinctrl-0 = <&usb0_pwr_1p15_reg_en>;
 		pinctrl-names = "default";
 
 		regulator-boot-on;
@@ -351,7 +348,7 @@
 		gpio = <&pm8550ve_9_gpios 8 GPIO_ACTIVE_HIGH>;
 		enable-active-high;
 
-		pinctrl-0 = <&rtmr0_1p8_reg_en>;
+		pinctrl-0 = <&usb0_1p8_reg_en>;
 		pinctrl-names = "default";
 
 		regulator-boot-on;
@@ -367,7 +364,7 @@
 		gpio = <&pm8550_gpios 11 GPIO_ACTIVE_HIGH>;
 		enable-active-high;
 
-		pinctrl-0 = <&rtmr0_3p3_reg_en>;
+		pinctrl-0 = <&usb0_3p3_reg_en>;
 		pinctrl-names = "default";
 
 		regulator-boot-on;
@@ -383,7 +380,7 @@
 		gpio = <&tlmm 188 GPIO_ACTIVE_HIGH>;
 		enable-active-high;
 
-		pinctrl-0 = <&rtmr1_1p15_reg_en>;
+		pinctrl-0 = <&usb1_pwr_1p15_reg_en>;
 		pinctrl-names = "default";
 
 		regulator-boot-on;
@@ -399,7 +396,7 @@
 		gpio = <&tlmm 175 GPIO_ACTIVE_HIGH>;
 		enable-active-high;
 
-		pinctrl-0 = <&rtmr1_1p8_reg_en>;
+		pinctrl-0 = <&usb1_pwr_1p8_reg_en>;
 		pinctrl-names = "default";
 
 		regulator-boot-on;
@@ -415,7 +412,7 @@
 		gpio = <&tlmm 186 GPIO_ACTIVE_HIGH>;
 		enable-active-high;
 
-		pinctrl-0 = <&rtmr1_3p3_reg_en>;
+		pinctrl-0 = <&usb1_pwr_3p3_reg_en>;
 		pinctrl-names = "default";
 
 		regulator-boot-on;
@@ -477,17 +474,16 @@
 	wcn6855-pmu {
 		compatible = "qcom,wcn6855-pmu";
 
-		vddio-supply = <&vreg_wcn_1p9>;
 		vddaon-supply = <&vreg_wcn_0p95>;
+		vddio-supply = <&vreg_wcn_1p9>;
+		vddpcie1p3-supply = <&vreg_wcn_1p9>;
+		vddpcie1p9-supply = <&vreg_wcn_1p9>;
 		vddpmu-supply = <&vreg_wcn_0p95>;
 		vddpmumx-supply = <&vreg_wcn_0p95>;
 		vddpmucx-supply = <&vreg_wcn_0p95>;
 		vddrfa0p95-supply = <&vreg_wcn_0p95>;
 		vddrfa1p3-supply = <&vreg_wcn_1p9>;
 		vddrfa1p9-supply = <&vreg_wcn_1p9>;
-		vddpcie1p3-supply = <&vreg_wcn_1p9>;
-		vddpcie1p9-supply = <&vreg_wcn_1p9>;
-
 
 		wlan-enable-gpios = <&tlmm 117 GPIO_ACTIVE_HIGH>;
 		bt-enable-gpios = <&tlmm 116 GPIO_ACTIVE_HIGH>;
@@ -954,7 +950,6 @@
 		reg = <0x08>;
 
 		clocks = <&rpmhcc RPMH_RF_CLK3>;
-		clock-names = "xo";
 
 		vdd-supply = <&vreg_rtmr0_1p15>;
 		vdd33-supply = <&vreg_rtmr0_3p3>;
@@ -970,8 +965,6 @@
 
 		orientation-switch;
 		retimer-switch;
-
-		ps8830,boot-on;
 
 		ports {
 			#address-cells = <1>;
@@ -1042,7 +1035,6 @@
 		reg = <0x8>;
 
 		clocks = <&rpmhcc RPMH_RF_CLK4>;
-		clock-names = "xo";
 
 		vdd-supply = <&vreg_rtmr1_1p15>;
 		vdd33-supply = <&vreg_rtmr1_3p3>;
@@ -1058,8 +1050,6 @@
 
 		orientation-switch;
 		retimer-switch;
-
-		ps8830,boot-on;
 
 		ports {
 			#address-cells = <1>;
@@ -1124,14 +1114,6 @@
 &lpass_tlmm {
 	spkr_01_sd_n_active: spkr-01-sd-n-active-state {
 		pins = "gpio12";
-		function = "gpio";
-		drive-strength = <16>;
-		bias-disable;
-		output-low;
-	};
-
-	spkr_23_sd_n_active: spkr-23-sd-n-active-state {
-		pins = "gpio13";
 		function = "gpio";
 		drive-strength = <16>;
 		bias-disable;
@@ -1231,15 +1213,15 @@
 		compatible = "pci17cb,1107";
 		reg = <0x10000 0x0 0x0 0x0 0x0>;
 
-		vddrfacmn-supply = <&vreg_pmu_rfa_cmn_0p8>;
 		vddaon-supply = <&vreg_pmu_aon_0p8>;
-		vddwlcx-supply = <&vreg_pmu_wlcx_0p8>;
-		vddwlmx-supply = <&vreg_pmu_wlmx_0p8>;
-		vddpcie1p8-supply = <&vreg_pmu_pcie_1p8>;
 		vddpcie0p9-supply = <&vreg_pmu_pcie_0p9>;
+		vddpcie1p8-supply = <&vreg_pmu_pcie_1p8>;
 		vddrfa0p8-supply = <&vreg_pmu_rfa_0p8>;
 		vddrfa1p2-supply = <&vreg_pmu_rfa_1p2>;
 		vddrfa1p8-supply = <&vreg_pmu_rfa_1p7>;
+		vddrfacmn-supply = <&vreg_pmu_rfa_cmn_0p8>;
+		vddwlcx-supply = <&vreg_pmu_wlcx_0p8>;
+		vddwlmx-supply = <&vreg_pmu_wlmx_0p8>;
 	};
 };
 
@@ -1272,7 +1254,7 @@
 		output-enable;
 	};
 
-	rtmr0_3p3_reg_en: rtmr0-3p3-reg-en-state {
+	usb0_3p3_reg_en: usb0-3p3-reg-en-state {
 		pins = "gpio11";
 		function = "normal";
 		power-source = <1>; /* 1.8V */
@@ -1296,7 +1278,7 @@
 };
 
 &pm8550ve_9_gpios {
-	rtmr0_1p8_reg_en: rtmr0-1p8-reg-en-state {
+	usb0_1p8_reg_en: usb0-1p8-reg-en-state {
 		pins = "gpio8";
 		function = "normal";
 		power-source = <1>; /* 1.8V */
@@ -1334,7 +1316,7 @@
 };
 
 &pmc8380_5_gpios {
-	rtmr0_1p15_reg_en: rtmr0-1p15-reg-en-state {
+	usb0_pwr_1p15_reg_en: usb0-pwr-1p15-reg-en-state {
 		pins = "gpio8";
 		function = "normal";
 		power-source = <1>; /* 1.8V */
@@ -1391,15 +1373,27 @@
 	status = "okay";
 
 	/* WSA8845, Left Speaker */
-	left_speaker: speaker@0,0 {
+	left_spkr: speaker@0,0 {
 		compatible = "sdw20217020400";
 		reg = <0 0>;
-		#sound-dai-cells = <0>;
 		reset-gpios = <&lpass_tlmm 12 GPIO_ACTIVE_LOW>;
-		sound-name-prefix = "SpeakerLeft";
+		#sound-dai-cells = <0>;
+		sound-name-prefix = "SpkrLeft";
 		vdd-1p8-supply = <&vreg_l15b_1p8>;
 		vdd-io-supply = <&vreg_l12b_1p2>;
 		qcom,port-mapping = <1 2 3 7 10 13>;
+	};
+
+	/* WSA8845, Right Speaker */
+	right_spkr: speaker@0,1 {
+		compatible = "sdw20217020400";
+		reg = <0 1>;
+		reset-gpios = <&lpass_tlmm 12 GPIO_ACTIVE_LOW>;
+		#sound-dai-cells = <0>;
+		sound-name-prefix = "SpkrRight";
+		vdd-1p8-supply = <&vreg_l15b_1p8>;
+		vdd-io-supply = <&vreg_l12b_1p2>;
+		qcom,port-mapping = <4 5 6 7 11 13>;
 	};
 };
 
@@ -1422,25 +1416,6 @@
 		compatible = "sdw20217010d00";
 		reg = <0 3>;
 		qcom,tx-port-mapping = <2 2 3 4>;
-	};
-};
-
-&swr3 {
-	status = "okay";
-
-	pinctrl-0 = <&wsa2_swr_active>, <&spkr_23_sd_n_active>;
-	pinctrl-names = "default";
-
-	/* WSA8845, Right Speaker */
-	right_speaker: speaker@0,0 {
-		compatible = "sdw20217020400";
-		reg = <0 0>;
-		reset-gpios = <&lpass_tlmm 13 GPIO_ACTIVE_LOW>;
-		#sound-dai-cells = <0>;
-		sound-name-prefix = "SpeakerRight";
-		vdd-1p8-supply = <&vreg_l15b_1p8>;
-		vdd-io-supply = <&vreg_l12b_1p2>;
-		qcom,port-mapping = <1 2 3 7 10 13>;
 	};
 };
 
@@ -1538,27 +1513,6 @@
 		};
 	};
 
-	rtmr1_1p15_reg_en: rtmr1-1p15-reg-en-state {
-		pins = "gpio188";
-		function = "gpio";
-		drive-strength = <2>;
-		bias-disable;
-	};
-
-	rtmr1_1p8_reg_en: rtmr1-1p8-reg-en-state {
-		pins = "gpio175";
-		function = "gpio";
-		drive-strength = <2>;
-		bias-disable;
-	};
-
-	rtmr1_3p3_reg_en: rtmr1-3p3-reg-en-state {
-		pins = "gpio186";
-		function = "gpio";
-		drive-strength = <2>;
-		bias-disable;
-	};
-
 	rtmr1_default: rtmr1-reset-n-active-state {
 		pins = "gpio176";
 		function = "gpio";
@@ -1585,6 +1539,27 @@
 			output-high;
 			drive-strength = <16>;
 		};
+	};
+
+	usb1_pwr_1p15_reg_en: usb1-pwr-1p15-reg-en-state {
+		pins = "gpio188";
+		function = "gpio";
+		drive-strength = <2>;
+		bias-disable;
+	};
+
+	usb1_pwr_1p8_reg_en: usb1-pwr-1p8-reg-en-state {
+		pins = "gpio175";
+		function = "gpio";
+		drive-strength = <2>;
+		bias-disable;
+	};
+
+	usb1_pwr_3p3_reg_en: usb1-pwr-3p3-reg-en-state {
+		pins = "gpio186";
+		function = "gpio";
+		drive-strength = <2>;
+		bias-disable;
 	};
 
 	wcd_default: wcd-reset-n-active-state {
@@ -1716,4 +1691,3 @@
 
 	status = "okay";
 };
-
